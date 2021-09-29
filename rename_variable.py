@@ -4,6 +4,7 @@ from tree_sitter import Node
 from typing import List
 
 
+# Get node with type "identifier"
 def get_identififer_nodes(root, text):
     queue = [root]
     var_declaration_nodes = []
@@ -17,6 +18,15 @@ def get_identififer_nodes(root, text):
          queue.append(child)
     return var_declaration_nodes
 
+"""
+Group nodes that has the same identifier into the same group
+E.g., 
+{
+    "a": [Nodes, Nodes],
+    "b": [Nodes],
+    "c": [Nodes]
+}
+"""
 def group_identifier_nodes(identifier_nodes, text):
     id_groups = {}
     for identifier_node in identifier_nodes:
@@ -80,13 +90,3 @@ print(identifier_nodes)
 groups = group_identifier_nodes(identifier_nodes, text)
 # print(groups)
 transform(groups, text)
-# for v in identifier_nodes:
-#     print(v)
-#     print(text[v.start_byte:v.end_byte])
-
-# get_var_name_from_nodes(var_declarations, text)
-
-# print(root_node.end_point)
-# assert root_node.type == 'module'
-# assert root_node.start_point == (1, 0)
-# assert root_node.end_point == (3, 13)
