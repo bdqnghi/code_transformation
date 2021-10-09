@@ -5,7 +5,7 @@ class VariableRenaming(BaseOperator):
     def __init__(self, language: str):
         super(VariableRenaming, self).__init__(language)
         self.var_node_types = {'identifier'}
-        self.var_parent_types = {'parameter', 'argument', 'variable', 'expression'}
+        self.var_filter_types = {'class_declaration', 'method_declaration', 'method_invocation'}
 
     # Get only variable node from type "identifier"
     def get_identifier_nodes(self, tree, text):
@@ -16,13 +16,13 @@ class VariableRenaming(BaseOperator):
             for child_node in current_node.children:
                 child_type = str(child_node.type)
                 if child_type in self.var_node_types:  # only identifier node
-                    parent_type = str(current_node.type)
-                    # filter out class/method name or function call identifier
-                    if any(p_type in parent_type for p_type in self.var_parent_types):
-                        var_name = text[child_node.start_byte: child_node.end_byte]
-                        if var_name not in var_renames:
-                            var_renames[var_name] = "var{}".format(len(var_renames) + 1)
-                        var_nodes.append([child_node, var_name, var_renames[var_name]])
+                    if str(current_node.type) in self.var_filter_types:
+                        # filter out class/method name or function call identifier
+                        continue
+                    var_name = text[child_node.start_byte: child_node.end_byte]
+                    if var_name not in var_renames:
+                        var_renames[var_name] = "var{}".format(len(var_renames) + 1)
+                    var_nodes.append([child_node, var_name, var_renames[var_name]])
                 queue.append(child_node)
         return var_nodes
 
