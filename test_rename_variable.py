@@ -1,9 +1,8 @@
-import config as cf
 from var_renaming import VariableRenaming
 
 
 def main():
-    var_renaming_operator = VariableRenaming(language=cf.JAVA_LANGUAGE)
+    var_renaming_operator = VariableRenaming(language="java")
 
     sample_code = """
         public class Main {
